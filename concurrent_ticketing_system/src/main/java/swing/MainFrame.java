@@ -1,5 +1,6 @@
 package swing;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 
 import javax.swing.JFrame;
@@ -11,31 +12,39 @@ import dev.ServerThread;
 import dev.TicketQueue;
 import dev.TicketRequest;
 import dev.UserThread;
+import dev.listener.SeatBookedListener;
 import dev.listener.TicketEventListener;
 
-public class MainFrame extends JFrame implements TicketEventListener {
+public class MainFrame extends JFrame implements TicketEventListener, SeatBookedListener {
 
 	private static final long serialVersionUID = 1L;
 
 	private final CardLayout cardLayout = new CardLayout();
 	private final JPanel container = new JPanel(cardLayout);
 
-	private TicketQueue queue = new TicketQueue();
+	private final TicketQueue queue = new TicketQueue();
+	
 	private final SeatManager seatManager;
 	private final SeatPanel seatPanel;
+	private final StatusPanel statusPanel;
 
 	public MainFrame(int rows, int cols) {
 
         setTitle("티켓팅 시뮬레이션");
         
         seatManager = new SeatManager(rows, cols);
+        statusPanel = new StatusPanel(seatManager);
 
         container.add(new StartPanel(this), "START");
         container.add(new QueuePanel(this), "QUEUE");
         
         seatPanel = new SeatPanel(this, seatManager, rows, cols);
         container.add(seatPanel, "SEAT");
-
+        
+        setLayout(new BorderLayout());
+        add(statusPanel, BorderLayout.NORTH);
+        add(container, BorderLayout.CENTER);
+        
         add(container);
 
         setSize(600, 600);
@@ -47,8 +56,8 @@ public class MainFrame extends JFrame implements TicketEventListener {
         	ServerThread server = new ServerThread(
                     queue,
                     seatManager,
-                    seatPanel,
-                    this
+                    this,              // SeatBookedListener
+                    this               // TicketEventListener
             );
         	new Thread(server).start();
         }
@@ -80,14 +89,14 @@ public class MainFrame extends JFrame implements TicketEventListener {
 	}
 
 	public void startBots() {
-		for (int i = 1; i <= 25; i++) {
+		for (int i = 1; i <= 10; i++) {
 			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
 			new Thread(bot).start();
 		}
 		
 		startUser();
 		
-		for (int i = 26; i <= 35; i++) {
+		for (int i = 26; i <= 50; i++) {
 			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
 			new Thread(bot).start();
 		}
@@ -102,5 +111,11 @@ public class MainFrame extends JFrame implements TicketEventListener {
 	@Override
 	public void onUserTurn() {
 		SwingUtilities.invokeLater(() -> showSeat());
+	}
+
+	@Override
+	public void onSeatBooked(int row, int col) {
+		seatPanel.updateSeatUI(row, col);
+		statusPanel.updateStatus();
 	}
 }

@@ -3,17 +3,23 @@ package dev;
 public class SeatManager {
 	private final Seat[][] seats;
 	private int remainingSeats;
+	private int totalSeats;
 
 	public SeatManager(int rows, int cols) {
 		seats = new Seat[rows][cols];
+		totalSeats = rows * cols;
+		remainingSeats = rows * cols;
+		
+		init(rows, cols);
+	}
 
+	private void init(int rows, int cols) {
 		for (int r = 0; r < rows; r++) {
 			for (int c = 0; c < cols; c++) {
 				String id = "A-" + (r + 1) + "-" + (c + 1);
 				seats[r][c] = new Seat(id);
 			}
 		}
-		remainingSeats = rows * cols;
 	}
 	
 	// 좌석 예약
@@ -40,6 +46,18 @@ public class SeatManager {
 	
 	public synchronized boolean isSoldOut() {
 	    return remainingSeats == 0;
+	}
+	
+	public int getRemainingSeats() {
+		return remainingSeats;
+	}
+
+	public int getTotalSeatCount() {
+	    return totalSeats;
+	}
+
+	public int getBookedSeatCount() {
+		return totalSeats - remainingSeats;
 	}
 
 }

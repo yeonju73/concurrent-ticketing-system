@@ -1,17 +1,18 @@
 package swing;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import dev.SeatManager;
-import dev.listener.SeatBookedListener;
 
-class SeatPanel extends JPanel implements SeatBookedListener {
+class SeatPanel extends JPanel  {
 
     private final SeatManager manager;
     private final JButton[][] buttons;
@@ -21,13 +22,22 @@ class SeatPanel extends JPanel implements SeatBookedListener {
 		this.manager = manager;
         this.buttons = new JButton[rows][cols];
 
-        setLayout(new GridLayout(rows, cols));
+        // GridLayout으로 행/열 맞추고 간격 5px
+        setLayout(new GridLayout(rows, cols, 5, 5)); // hgap, vgap = 5px
+        setBackground(Color.DARK_GRAY); // 좌석 사이 간격 색
 	
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
 
                 JButton btn = new JButton();
-                btn.setBackground(Color.GREEN);
+                btn.setBackground(new Color(123, 104, 238));
+                
+                // 정사각형 크기 지정
+                int size = 50; // 50x50px 정사각형
+                btn.setPreferredSize(new Dimension(size, size));
+
+                // 버튼 테두리 살짝
+                btn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
                 buttons[r][c] = btn;
                 
@@ -39,7 +49,7 @@ class SeatPanel extends JPanel implements SeatBookedListener {
                     boolean success = manager.getSeat(row, col).book();
 
                     if (success) {
-                        btn.setBackground(Color.RED);
+                        btn.setBackground(Color.LIGHT_GRAY);
                         JOptionPane.showMessageDialog(frame, "예매 성공");
                     } else {
                         JOptionPane.showMessageDialog(frame, "이미 선택된 좌석입니다.");
@@ -53,12 +63,7 @@ class SeatPanel extends JPanel implements SeatBookedListener {
     
     public void updateSeatUI(int row, int col) {
         SwingUtilities.invokeLater(() -> {
-            buttons[row][col].setBackground(Color.RED);
+            buttons[row][col].setBackground(Color.LIGHT_GRAY);
         });
     }
-
-	@Override
-	public void onSeatBooked(int row, int col) {
-		updateSeatUI(row, col);
-	}
 }

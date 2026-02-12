@@ -24,36 +24,34 @@ public class MainFrame extends JFrame implements TicketEventListener {
 	private final SeatManager seatManager;
 	private final SeatPanel seatPanel;
 
+	// 현재 유저 정보
+	private TicketRequest currentUser;
+
 	public MainFrame(int rows, int cols) {
 
-        setTitle("티켓팅 시뮬레이션");
-        
-        seatManager = new SeatManager(rows, cols);
+		setTitle("티켓팅 시뮬레이션");
 
-        container.add(new StartPanel(this), "START");
-        container.add(new QueuePanel(this), "QUEUE");
-        
-        seatPanel = new SeatPanel(this, seatManager, rows, cols);
-        container.add(seatPanel, "SEAT");
+		seatManager = new SeatManager(rows, cols);
 
-        add(container);
+		container.add(new StartPanel(this), "START");
+		container.add(new QueuePanel(this), "QUEUE");
 
-        setSize(600, 600);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setVisible(true);
-        
-        //서버 스레드 시작
-        for (int i =0; i < 2; i++) {
-        	ServerThread server = new ServerThread(
-                    queue,
-                    seatManager,
-                    seatPanel,
-                    this
-            );
-        	new Thread(server).start();
-        }
-        showStart();
-    }
+		seatPanel = new SeatPanel(this, seatManager, rows, cols);
+		container.add(seatPanel, "SEAT");
+
+		add(container);
+
+		setSize(600, 600);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setVisible(true);
+
+		// 서버 스레드 시작
+		for (int i = 0; i < 2; i++) {
+			ServerThread server = new ServerThread(queue, seatManager, seatPanel, this);
+			new Thread(server).start();
+		}
+		showStart();
+	}
 
 	public void showStart() {
 		cardLayout.show(container, "START");
@@ -84,9 +82,9 @@ public class MainFrame extends JFrame implements TicketEventListener {
 			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
 			new Thread(bot).start();
 		}
-		
+
 		startUser();
-		
+
 		for (int i = 26; i <= 35; i++) {
 			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
 			new Thread(bot).start();
@@ -95,6 +93,8 @@ public class MainFrame extends JFrame implements TicketEventListener {
 
 	public void startUser() {
 		TicketRequest request = new TicketRequest("USER", false);
+		this.currentUser = request;
+
 		UserThread userThread = new UserThread(queue, request);
 		new Thread(userThread).start();
 	}
@@ -102,5 +102,9 @@ public class MainFrame extends JFrame implements TicketEventListener {
 	@Override
 	public void onUserTurn() {
 		SwingUtilities.invokeLater(() -> showSeat());
+	}
+
+	public TicketRequest getCurrentUser() {
+		return currentUser;
 	}
 }

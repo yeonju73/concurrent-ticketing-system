@@ -2,6 +2,7 @@ package dev;
 
 public class SeatManager {
 	private final Seat[][] seats;
+	private int remainingSeats;
 
 	public SeatManager(int rows, int cols) {
 		seats = new Seat[rows][cols];
@@ -12,11 +13,17 @@ public class SeatManager {
 				seats[r][c] = new Seat(id);
 			}
 		}
+		remainingSeats = rows * cols;
 	}
 	
 	// 좌석 예약
-	public boolean bookSeat(int row, int col) {
-	    return seats[row][col].book();
+	// remainingSeats 보호
+	public synchronized boolean bookSeat(int row, int col) {
+		if (seats[row][col].book()) {
+	        remainingSeats--;
+	        return true;
+	    }
+	    return false;
 	}
 
 	public Seat getSeat(int row, int col) {
@@ -29,6 +36,10 @@ public class SeatManager {
 
 	public int getColCount() {
 		return seats[0].length;
+	}
+	
+	public synchronized boolean isSoldOut() {
+	    return remainingSeats == 0;
 	}
 
 }

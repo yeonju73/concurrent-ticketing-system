@@ -5,7 +5,7 @@ import java.util.Queue;
 
 public class TicketQueue {
 	private final int MAX_SIZE = 10;  // 대기열 최대 인원
-	private final Queue<String> queue = new LinkedList<>();
+	private final Queue<TicketRequest> queue = new LinkedList<>();
 
 	private final Object QUEUE_IS_NOT_FULL = new Object();
 	private final Object QUEUE_IS_NOT_EMPTY = new Object();
@@ -13,9 +13,9 @@ public class TicketQueue {
 	/**
 	 * 프로듀서가 큐에 메시지를 적재, TicketQueue는 컨슈머에게 메시지가 큐에 적재되었음을 알림
 	 */
-	public void enterQueue(String user) {
+	public void enterQueue(TicketRequest user) {
 		queue.add(user);
-		System.out.println(user + " 대기열 입장");
+		System.out.println(user.getName() + " 대기열 입장");
 		notifyToConsumer();
 		// DataQueue는 컨슈머에게 메시지가 큐에 적재되었음을 알림
 	}
@@ -23,11 +23,11 @@ public class TicketQueue {
 	/**
 	 * 컨슈머가 큐에서 메시지를 꺼내 소비, TicketQueue는 프로듀서에게 큐에 공간이 생겼음을 알림
 	 */
-	public String processTicket() {
-		String user = queue.poll();
-		System.out.println("서버 처리 중: " + user);
+	public TicketRequest processTicket() {
+		TicketRequest request = queue.poll();
+		System.out.println(request.getName() + " 소비");
 		notifyToProducer(); // DataQueue는 프로듀서에게 큐에 공간이 생겼음을 알림
-		return user;
+		return request;
 	}
 
 	/**
@@ -85,4 +85,5 @@ public class TicketQueue {
 	public String getQueueElements() {
 		return queue.toString();
 	}
+	
 }

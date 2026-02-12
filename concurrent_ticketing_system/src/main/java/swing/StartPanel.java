@@ -19,8 +19,8 @@ class StartPanel extends JPanel {
         startBtn.addActionListener(e -> {
 
             frame.showQueue();     // 화면 전환
+            frame.startBots();	   // 봇 스레드 생성
             
-            // TODO: 여기에 대기열 넣으면 될것같아요!!!!
         });
 
         add(title, BorderLayout.CENTER);

@@ -6,16 +6,20 @@ import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import dev.SeatManager;
+import dev.listener.SeatBookedListener;
 
-class SeatPanel extends JPanel {
+class SeatPanel extends JPanel implements SeatBookedListener {
 
     private final SeatManager manager;
+    private final JButton[][] buttons;
 
-    public SeatPanel(MainFrame frame, int rows, int cols) {
+    public SeatPanel(MainFrame frame, SeatManager manager, int rows, int cols) {
 
-        manager = new SeatManager(rows, cols);
+		this.manager = manager;
+        this.buttons = new JButton[rows][cols];
 
         setLayout(new GridLayout(rows, cols));
 	
@@ -25,6 +29,8 @@ class SeatPanel extends JPanel {
                 JButton btn = new JButton();
                 btn.setBackground(Color.GREEN);
 
+                buttons[r][c] = btn;
+                
                 int row = r;
                 int col = c;
 
@@ -44,4 +50,15 @@ class SeatPanel extends JPanel {
             }
         }
     }
+    
+    public void updateSeatUI(int row, int col) {
+        SwingUtilities.invokeLater(() -> {
+            buttons[row][col].setBackground(Color.RED);
+        });
+    }
+
+	@Override
+	public void onSeatBooked(int row, int col) {
+		updateSeatUI(row, col);
+	}
 }

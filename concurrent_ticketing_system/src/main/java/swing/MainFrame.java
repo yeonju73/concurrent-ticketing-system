@@ -23,7 +23,7 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 	private final JPanel container = new JPanel(cardLayout);
 
 	private final TicketQueue queue = new TicketQueue();
-	
+
 	private final SeatManager seatManager;
 	private final SeatPanel seatPanel;
 	private final StatusPanel statusPanel;
@@ -36,13 +36,17 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 		setTitle("티켓팅 시뮬레이션");
 
 		seatManager = new SeatManager(rows, cols);
-
+		statusPanel = new StatusPanel(seatManager);
+		
 		container.add(new StartPanel(this), "START");
 		container.add(new QueuePanel(this), "QUEUE");
 
 		seatPanel = new SeatPanel(this, seatManager, rows, cols);
 		container.add(seatPanel, "SEAT");
 
+		setLayout(new BorderLayout());
+		add(statusPanel, BorderLayout.NORTH);
+		add(container, BorderLayout.CENTER);
 		add(container);
 
 		setSize(600, 600);
@@ -51,7 +55,7 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 
 		// 서버 스레드 시작
 		for (int i = 0; i < 2; i++) {
-			ServerThread server = new ServerThread(queue, seatManager, seatPanel, this);
+			ServerThread server = new ServerThread(queue, seatManager, this, this);
 			new Thread(server).start();
 		}
 		showStart();
@@ -88,7 +92,7 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 		}
 
 		startUser();
-		
+
 		for (int i = 26; i <= 50; i++) {
 			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
 			new Thread(bot).start();
@@ -108,13 +112,15 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 		SwingUtilities.invokeLater(() -> showSeat());
 	}
 
-	public TicketRequest getCurrentUser() {
-		return currentUser;
-  }
-  
+
 	@Override
 	public void onSeatBooked(int row, int col) {
 		seatPanel.updateSeatUI(row, col);
 		statusPanel.updateStatus();
 	}
+	
+	public TicketRequest getCurrentUser() {
+		return currentUser;
+	}
+
 }

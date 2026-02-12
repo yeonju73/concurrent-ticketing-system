@@ -8,10 +8,10 @@ import javax.swing.SwingUtilities;
 
 import dev.SeatManager;
 import dev.ServerThread;
-import dev.TicketEventListener;
 import dev.TicketQueue;
 import dev.TicketRequest;
 import dev.UserThread;
+import dev.listener.TicketEventListener;
 
 public class MainFrame extends JFrame implements TicketEventListener {
 
@@ -81,6 +81,13 @@ public class MainFrame extends JFrame implements TicketEventListener {
 
 	public void startBots() {
 		for (int i = 1; i <= 25; i++) {
+			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
+			new Thread(bot).start();
+		}
+		
+		startUser();
+		
+		for (int i = 26; i <= 35; i++) {
 			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
 			new Thread(bot).start();
 		}

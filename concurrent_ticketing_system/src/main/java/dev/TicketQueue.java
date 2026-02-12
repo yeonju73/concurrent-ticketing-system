@@ -4,7 +4,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class TicketQueue {
-	private final int MAX_SIZE = 30;  // 대기열 최대 인원
+	private final int MAX_SIZE = 5000;  // 대기열 최대 인원
 	BlockingQueue<TicketRequest> queue = new ArrayBlockingQueue<>(MAX_SIZE);
 	
 	/**

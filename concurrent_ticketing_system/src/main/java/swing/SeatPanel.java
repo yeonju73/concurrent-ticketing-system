@@ -8,8 +8,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import dev.SeatBookedListener;
 import dev.SeatManager;
+import dev.listener.SeatBookedListener;
 
 class SeatPanel extends JPanel implements SeatBookedListener {
 

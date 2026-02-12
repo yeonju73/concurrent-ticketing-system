@@ -58,7 +58,7 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 		setVisible(true);
 
 		// 서버 스레드 시작
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 30; i++) {
 			ServerThread server = new ServerThread(queue, seatManager, this, this);
 			new Thread(server).start();
 		}

@@ -1,7 +1,6 @@
 package swing;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
@@ -32,10 +31,6 @@ class SeatPanel extends JPanel  {
                 JButton btn = new JButton();
                 btn.setBackground(new Color(123, 104, 238));
                 
-                // 정사각형 크기 지정
-                int size = 50; // 50x50px 정사각형
-                btn.setPreferredSize(new Dimension(size, size));
-
                 // 버튼 테두리 살짝
                 btn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 

@@ -38,13 +38,34 @@
 
 ### 3-2. 처리 순서
 
-1. **Producer (UserThread/BotThread)** → `TicketQueue.add()`로 요청 등록
+1. **Producer (UserThread)** → `TicketQueue.add()`로 요청 등록
 2. **Consumer (ServerThread)** → `TicketQueue.take()`로 요청 소비
 3. **SeatManager.bookSeat(row, col)** 호출
 
    * 내부적으로 `Seat.book()` 호출 → 단일 스레드만 좌석 예약 성공
-   * 예약 성공 시 `remainingSeats.decrementAndGet()` 호출 → `AtomicInteger`로 남은 좌석 수를 원자적으로 감소
-4. UI 업데이트는 **리스너(listener)를 통해 Swing EDT에서 안전하게 처리**
+   * 예약 성공 시 `remainingSeats.decrementAndGet()` 호출 → **`AtomicInteger`**로 남은 좌석 수를 원자적으로 감소
+4.  **Seat.book()**
+    * synchronized 로 thread-safe 하게 처리
+    ```java
+    public synchronized boolean book() {
+		if (!booked) {
+			// 동시에 접근 시도 확률를 키우기 위해 임의로 딜레이 설정
+			try { Thread.sleep(1); } catch (InterruptedException ignored) {}
+			booked = true;
+			return true;
+		}
+		return false;
+	}
+    ```
+6. UI 업데이트는 **리스너(listener)를 통해 Swing EDT에서 안전하게 처리**
+   * Swing은 스레드 안전하지 않으므로, 백그라운드 스레드에서 발생한 좌석 예약 결과 등 GUI 변경은 SwingUtilities.invokeLater()를 사용하여 **EDT(Event Dispatch Thread)** 에서 안전하게 처리함.
+   ```java
+     SwingUtilities.invokeLater(() -> {
+        label.setText("좌석 예약 완료!");
+    });
+   ```
+   * invokeLater()는 Runnable을 EDT에서 실행하도록 예약하여,
+   * 동시성 문제 없이 안전하게 UI를 업데이트할 수 있습니다.
 
 > ✔️ `BlockingQueue`와 `synchronized`를 적절히 사용하여 **여러 스레드가 동시에 다른 좌석을 예약** 가능하도록 설계
 
@@ -84,18 +105,26 @@ public interface SeatBookedListener {
 ## 5. 테스트 코드
 
 * **SeatTest** : 다수 스레드가 동일 좌석을 동시에 예약 시도 → 동시성 문제 확인
-* **TicketQueueTest** : `BlockingQueue`로 producer-consumer 패턴 테스트
-* **SeatManagerTest** : 남은 좌석 수, 예약 성공 여부, 동시 예약 시나리오 검증
 
 ```java
 Runnable bookTask = () -> {
-    boolean success = seat.book();
-    System.out.println(Thread.currentThread().getName() + " 예약 시도 → " + success);
-};
+            boolean success = seat.book();
+            System.out.println(Thread.currentThread().getName() + " 예약 시도 → " + success);
+        };
 
-for (int i = 0; i < 1000; i++) {
-    new Thread(bookTask).start();
-}
+        Thread[] threads = new Thread[50];
+
+        for (int i = 0; i < 50; i++) {
+            threads[i] = new Thread(bookTask, "Thread-" + i);
+            threads[i].start();
+        }
+
+        // 모든 스레드가 끝날 때까지 대기
+        for (Thread t : threads) {
+            t.join();
+        }
+
+        System.out.println("최종 상태: booked = " + seat.isBooked());
 ```
 
 ---

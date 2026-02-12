@@ -32,7 +32,7 @@
 | 공유 자원                          | 설명                | thread-safe 처리 방식                                                                  |
 | ------------------------------ | ----------------- | ---------------------------------------------------------------------------------- |
 | **TicketQueue**                | 대기열에 들어온 사용자/봇 요청 | `BlockingQueue` 사용 → 자동으로 입출력 시 동기화, `put()`/`take()` 메소드로 producer-consumer 패턴 구현 |
-| **SeatManager.remainingSeats** | 남은 좌석 수           | 좌석 예약 시 `synchronized` 메소드 `bookSeat(row, col)`로 동기화, 남은 좌석 수 감소 처리                |
+| **SeatManager.remainingSeats** | 남은 좌석 수           | AtomicInteger 사용 → 좌석 예약 시 decrementAndGet()로 원자적 감소 처리          |
 | **Seat(개별 좌석)**                | 실제 좌석 하나          | `book()` 메소드를 통해 예약 시 단일 스레드만 성공 가능하도록 처리 (임계영역 보호)                                |
 
 ### 3-2. 처리 순서

@@ -54,7 +54,7 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 		setVisible(true);
 
 		// 서버 스레드 시작
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 30; i++) {
 			ServerThread server = new ServerThread(queue, seatManager, this, this);
 			new Thread(server).start();
 		}
@@ -86,17 +86,18 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 	}
 
 	public void startBots() {
-		for (int i = 1; i <= 10; i++) {
-			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
-			new Thread(bot).start();
-		}
-
 		startUser();
-
-		for (int i = 26; i <= 50; i++) {
+		for (int i = 1; i <= 500; i++) {
 			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
 			new Thread(bot).start();
 		}
+//
+//		
+//
+//		for (int i = 26; i <= 50; i++) {
+//			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
+//			new Thread(bot).start();
+//		}
 	}
 
 	public void startUser() {

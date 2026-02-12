@@ -1,14 +1,16 @@
 package dev;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class SeatManager {
 	private final Seat[][] seats;
-	private int remainingSeats;
+	private AtomicInteger remainingSeats;
 	private int totalSeats;
 
 	public SeatManager(int rows, int cols) {
 		seats = new Seat[rows][cols];
 		totalSeats = rows * cols;
-		remainingSeats = rows * cols;
+		remainingSeats = new AtomicInteger(totalSeats);
 		
 		init(rows, cols);
 	}
@@ -24,9 +26,9 @@ public class SeatManager {
 	
 	// 좌석 예약
 	// remainingSeats 보호
-	public synchronized boolean bookSeat(int row, int col) {
+	public boolean bookSeat(int row, int col) {
 		if (seats[row][col].book()) {
-	        remainingSeats--;
+			remainingSeats.decrementAndGet(); // atomic 연산
 	        return true;
 	    }
 	    return false;
@@ -45,11 +47,11 @@ public class SeatManager {
 	}
 	
 	public synchronized boolean isSoldOut() {
-	    return remainingSeats == 0;
+	    return remainingSeats.get() == 0;
 	}
 	
 	public int getRemainingSeats() {
-		return remainingSeats;
+		return remainingSeats.get();
 	}
 
 	public int getTotalSeatCount() {
@@ -57,7 +59,7 @@ public class SeatManager {
 	}
 
 	public int getBookedSeatCount() {
-		return totalSeats - remainingSeats;
+		return totalSeats - remainingSeats.get();
 	}
 
 }

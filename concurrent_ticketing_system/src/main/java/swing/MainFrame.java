@@ -9,9 +9,9 @@ import javax.swing.SwingUtilities;
 
 import dev.SeatManager;
 import dev.ServerThread;
+import dev.SimulationController;
 import dev.TicketQueue;
 import dev.TicketRequest;
-import dev.UserThread;
 import dev.listener.SeatBookedListener;
 import dev.listener.TicketEventListener;
 
@@ -27,6 +27,8 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 	private final SeatManager seatManager;
 	private final SeatPanel seatPanel;
 	private final StatusPanel statusPanel;
+	
+	private final SimulationController simulationController;
 
 	// 현재 유저 정보
 	private TicketRequest currentUser;
@@ -37,6 +39,8 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 
 		seatManager = new SeatManager(rows, cols);
 		statusPanel = new StatusPanel(seatManager);
+		
+		simulationController = new SimulationController(queue);
 		
 		container.add(new StartPanel(this), "START");
 		container.add(new QueuePanel(this), "QUEUE");
@@ -84,34 +88,16 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 	public TicketQueue getQueue() {
 		return queue;
 	}
-
-	public void startBots() {
-		for (int i = 1; i <= 10; i++) {
-			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
-			new Thread(bot).start();
-		}
-
-		startUser();
-
-		for (int i = 26; i <= 50; i++) {
-			UserThread bot = new UserThread(queue, new TicketRequest("Bot-" + i, true));
-			new Thread(bot).start();
-		}
-	}
-
-	public void startUser() {
-		TicketRequest request = new TicketRequest("USER", false);
-		this.currentUser = request;
-
-		UserThread userThread = new UserThread(queue, request);
-		new Thread(userThread).start();
+	
+	public void startSimulation() {
+	    simulationController.startScenario(this);
+	    showQueue();
 	}
 
 	@Override
 	public void onUserTurn() {
 		SwingUtilities.invokeLater(() -> showSeat());
 	}
-
 
 	@Override
 	public void onSeatBooked(int row, int col) {
@@ -121,6 +107,10 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 	
 	public TicketRequest getCurrentUser() {
 		return currentUser;
+	}
+	
+	public void setCurrentUser(TicketRequest request) {
+		this.currentUser = request;
 	}
 
 }

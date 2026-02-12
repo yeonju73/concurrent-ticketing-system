@@ -18,21 +18,19 @@ public class ServerThread implements Runnable {
 	public void run() {
 		while (true) { // 계속 서버가 동작하도록 루프 추가
 			try {
-
-				// 큐가 비어있으면 대기
-				if (queue.isEmpty()) {
-					queue.waitUntilIsNotEmpty();
-				}
-
 				// 한 명 소비
 				TicketRequest request = queue.processTicket();
 
-				if (request.isBot()) {
-					consumeBot(request);
+				if (request == null) {
+					System.out.println(String.format("  [%s] 큐가 비어있음 %n", 
+							Thread.currentThread().getName()));
 				} else {
-					consumeUser(request);
+					if (request.isBot()) {
+						consumeBot(request);
+					} else {
+						consumeUser(request);
+					}
 				}
-
 				// 0.5초마다 한 명씩 처리
 				Thread.sleep(500);
 

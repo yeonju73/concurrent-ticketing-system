@@ -30,19 +30,13 @@ public class QueuePanel extends JPanel {
 	private void pollQueueState() {
 		TicketRequest user = frame.getCurrentUser();
 
-		// 1사용자 없음
-		if (user == null) {
-			label.setText("사용자 없음");
-			return;
-		}
-
-		// 아직 ticket 발급 전
-		if (user.getTicketNo() <= 0) {
+		// 대기열 진입 중
+		if (user == null || user.getTicketNo() <= 0) {
 			label.setText("대기열 진입 중...");
 			return;
 		}
 
-		// 3️⃣ ticket 발급 완료 → 순번 계산
+		// ticket 발급 완료 → 순번 계산
 		long remaining = frame.getQueue().getRemainingPosition(user.getTicketNo());
 
 		if (remaining <= 1) {

@@ -5,11 +5,13 @@ public class ServerThread implements Runnable {
 	private final TicketQueue queue;
 	private final SeatManager seatManager;
 	private final SeatBookedListener listener;
+	private final TicketEventListener ticketEventListener;
 
-	public ServerThread(TicketQueue queue, SeatManager seatManager, SeatBookedListener listener) {
+	public ServerThread(TicketQueue queue, SeatManager seatManager, SeatBookedListener listener, TicketEventListener ticketEventListener) {
 		this.queue = queue;
 		this.seatManager = seatManager;
 		this.listener = listener;
+		this.ticketEventListener = ticketEventListener;
 	}
 
 	@Override
@@ -31,8 +33,8 @@ public class ServerThread implements Runnable {
 					consumeUser(request);
 				}
 
-				// 5초마다 한 명씩 처리
-				Thread.sleep(1000);
+				// 0.5초마다 한 명씩 처리
+				Thread.sleep(500);
 
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
@@ -44,13 +46,10 @@ public class ServerThread implements Runnable {
 	private void consumeUser(TicketRequest request) {
 		System.out.println("🧑 " + request.getName() + " 입장 허용");
 
-		// 여기서 Swing 화면 전환
-		// 예:
-		// SwingUtilities.invokeLater(() -> {
-		// mainFrame.showSeat();
-		// });
-
-		// 실제 좌석 예약은 SeatPanel에서 버튼 클릭 시 처리
+		// Swing 화면 전환
+		if (ticketEventListener != null) {
+			ticketEventListener.onUserTurn();
+	    }
 
 	}
 
@@ -58,7 +57,7 @@ public class ServerThread implements Runnable {
 		try {
 			System.out.println("🤖 " + request.getName() + " 입장");
 
-			Thread.sleep(1000); // 1초 대기
+			Thread.sleep(500);
 
 			while (!seatManager.isSoldOut()) {
 

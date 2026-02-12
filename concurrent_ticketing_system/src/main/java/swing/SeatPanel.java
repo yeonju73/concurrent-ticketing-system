@@ -59,9 +59,6 @@ class SeatPanel extends JPanel implements SeatBookedListener {
 
 	@Override
 	public void onSeatBooked(int row, int col) {
-		SwingUtilities.invokeLater(() -> {
-			buttons[row][col].setBackground(Color.RED);
-	    });
-		
+		updateSeatUI(row, col);
 	}
 }

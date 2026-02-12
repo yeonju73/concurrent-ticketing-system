@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class TicketQueue {
-	private final int MAX_SIZE = 10;  // 대기열 최대 인원
+//	private final int MAX_SIZE = 10;  // 대기열 최대 인원
 	private final Queue<TicketRequest> queue = new LinkedList<>();
 
 	private final Object QUEUE_IS_NOT_FULL = new Object();
@@ -70,12 +70,13 @@ public class TicketQueue {
 	 */
 	private void notifyToConsumer() {
 		synchronized (QUEUE_IS_NOT_EMPTY) {
-			QUEUE_IS_NOT_EMPTY.notify();
+			QUEUE_IS_NOT_EMPTY.notifyAll();
 		}
 	}
 
 	public boolean isFull() {
-		return queue.size() == MAX_SIZE;
+		return false;
+//		return queue.size() == MAX_SIZE;
 	}
 
 	public boolean isEmpty() {
@@ -85,5 +86,12 @@ public class TicketQueue {
 	public String getQueueElements() {
 		return queue.toString();
 	}
+	
+	public int getWaitingCount() {
+	    synchronized (queue) {
+	        return queue.size();
+	    }
+	}
+
 	
 }

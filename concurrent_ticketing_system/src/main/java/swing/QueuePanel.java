@@ -1,11 +1,11 @@
 package swing;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
+
 
 class QueuePanel extends JPanel {
 
@@ -14,11 +14,13 @@ class QueuePanel extends JPanel {
         setLayout(new BorderLayout());
 
         JLabel label = new JLabel("대기열..", JLabel.CENTER);
-
-        JButton nextBtn = new JButton("내 차례!");
-        nextBtn.addActionListener(e -> frame.showSeat());
+        
+        Timer timer = new Timer(500, e -> {
+            int count = frame.getQueue().getWaitingCount();
+            label.setText("앞에 " + count + " 명 대기 중");
+        });
+        timer.start();
 
         add(label, BorderLayout.CENTER);
-        add(nextBtn, BorderLayout.SOUTH);
     }
 }

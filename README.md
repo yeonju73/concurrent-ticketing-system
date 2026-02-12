@@ -11,6 +11,7 @@
 ---
 
 ## 2. 전체 시나리오
+<img width="533" height="532" alt="image" src="https://github.com/user-attachments/assets/50cb5ac1-cc91-4b8f-948b-37c065aef331" />
 
 1. 사용자가 프로그램 실행
 2. “게임 시작” 클릭 → 대기열(Queue) 진입

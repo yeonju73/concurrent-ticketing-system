@@ -45,6 +45,9 @@ class SeatPanel extends JPanel  {
 
                     if (success) {
                     	frame.onSeatBooked(row, col);
+                    	SwingUtilities.invokeLater(() -> {
+                            buttons[row][col].setBackground(Color.green);
+                        });
                         JOptionPane.showMessageDialog(frame, "예매 성공");
                     } else {
                         JOptionPane.showMessageDialog(frame, "이미 선택된 좌석입니다.");

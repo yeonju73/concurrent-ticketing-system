@@ -8,7 +8,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
-			new MainFrame(6, 6); // 좌석 크기 
+			new MainFrame(30, 10); // 좌석 크기 
 		});
 	}
 

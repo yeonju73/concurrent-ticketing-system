@@ -32,7 +32,7 @@
 | 공유 자원                          | 설명                | thread-safe 처리 방식                                                                  |
 | ------------------------------ | ----------------- | ---------------------------------------------------------------------------------- |
 | **TicketQueue**                | 대기열에 들어온 사용자/봇 요청 | `BlockingQueue` 사용 → 자동으로 입출력 시 동기화, `put()`/`take()` 메소드로 producer-consumer 패턴 구현 |
-| **SeatManager.remainingSeats** | 남은 좌석 수           | AtomicInteger 사용 → 좌석 예약 시 decrementAndGet()로 원자적 감소 처리          |
+| **SeatManager.remainingSeats** | 남은 좌석 수           | `AtomicInteger` 사용 → 좌석 예약 시 decrementAndGet()로 원자적 감소 처리          |
 | **Seat(개별 좌석)**                | 실제 좌석 하나          | `book()` 메소드를 통해 예약 시 단일 스레드만 성공 가능하도록 처리 (임계영역 보호)                                |
 
 ### 3-2. 처리 순서
@@ -41,8 +41,8 @@
 2. **Consumer (ServerThread)** → `TicketQueue.take()`로 요청 소비
 3. **SeatManager.bookSeat(row, col)** 호출
 
-   * 내부적으로 **Seat.book()** 호출
-   * 예약 성공 시 `remainingSeats--`
+   * 내부적으로 `Seat.book()` 호출 → 단일 스레드만 좌석 예약 성공
+   * 예약 성공 시 `remainingSeats.decrementAndGet()` 호출 → `AtomicInteger`로 남은 좌석 수를 원자적으로 감소
 4. UI 업데이트는 **리스너(listener)를 통해 Swing EDT에서 안전하게 처리**
 
 > ✔️ `BlockingQueue`와 `synchronized`를 적절히 사용하여 **여러 스레드가 동시에 다른 좌석을 예약** 가능하도록 설계
@@ -116,7 +116,3 @@ for (int i = 0; i < 1000; i++) {
 3. 사용자는 차례가 되면 좌석 선택 화면에서 좌석 예약 가능
 4. 좌석 예약 시 상단 StatusPanel에 남은 좌석 수와 예약된 좌석 수 자동 업데이트
 
----
-
-제가 원하면 여기에 **각 스레드별 역할 그림**이나 **프로듀서-컨슈머 흐름도**도 넣어서 README에 시각화할 수 있어요.
-혹시 그거까지 만들어 드릴까요?

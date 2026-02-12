@@ -20,7 +20,7 @@ public class SimulationController {
 
 		new Thread(new UserThread(queue, userReq), "USER").start();
 
-		startBots(26, 25);
+		startBots(26, 1000);
 	}
 
 	// 봇 생성

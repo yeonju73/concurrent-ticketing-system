@@ -83,25 +83,4 @@ Runnable bookTask = () -> {
 * 50개 Thread 동시에 실행 → 최종 좌석 상태 확인 가능
 * 멀티스레드 환경에서 동시성 문제 검증 가능
 
----
-
-## 6. 설계 특징
-
-* Producer-Consumer 패턴으로 대기열 관리
-* BlockingQueue + AtomicInteger + synchronized로 **멀티스레드 안전 보장**
-* Seat 단위로 최소한 동기화 → 동시 예약 가능
-* Observer 패턴으로 UI-서버 분리, 이벤트 기반 화면 갱신
-* Swing Timer 사용 → 좌석/대기열 상태 실시간 업데이트
-
----
-
-## 7. 사용 방법
-
-1. 프로그램 실행 → StartPanel에서 “게임 시작” 클릭
-2. Bot과 사용자가 대기열에 들어감
-3. 서버 스레드가 요청 처리 → 사용자 차례 시 SeatPanel에서 좌석 선택 가능
-4. 좌석 예약 시 StatusPanel에서 남은 좌석 수 및 예약된 좌석 수 자동 갱신
-
-<img width="533" height="532" alt="image" src="https://github.com/user-attachments/assets/50cb5ac1-cc91-4b8f-948b-37c065aef331" />
-
 

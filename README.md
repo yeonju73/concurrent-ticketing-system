@@ -1,17 +1,19 @@
 # 🎮 Concurrent Ticketing Simulator
 
-## 1. 프로젝트 목적
+## 1. 프로젝트 개요
 
 멀티스레드 환경에서 동시성 문제와 **thread-safe 설계**의 중요성을 시각적으로 보여주는 티켓팅 시뮬레이션 프로그램입니다.
 
-* 다수의 Bot Thread와 사용자 Thread가 동시에 좌석에 접근
-* 동기화 여부에 따른 데이터 무결성 차이를 실험적으로 확인
-* UI를 통해 실시간 좌석 상태 및 대기열 현황 확인
+* 다수의 Bot Thread와 사용자 Thread가 동시에 대기열(Queue)에 진입
+* 대기열을 통과한 Thread들이 동시에 동일한 좌석에 접근하여 예약 경쟁
+* Swing UI를 통해 실시간 좌석 상태 및 대기열 현황 확인
 
 ---
 
 ## 2. 전체 시나리오
-<img width="533" height="532" alt="image" src="https://github.com/user-attachments/assets/50cb5ac1-cc91-4b8f-948b-37c065aef331" />
+
+
+
 
 1. 프로그램 실행 후 “게임 시작” 클릭 → 사용자 대기열 진입
 2. 동시에 Bot Thread도 대기열에 진입
@@ -33,16 +35,15 @@
 | Seat (개별 좌석)               | 실제 좌석 하나          | `book()` 메소드로 임계 영역 보호 → 단일 스레드만 예약 가능                     |
 
 ### 3-2. 처리 순서
+<img width="700" height="233" alt="producer-consumer-1" src="https://github.com/user-attachments/assets/690a19de-4806-4723-a55a-0b37be84b965" />
 
-1. **Producer (User/Bot Thread)** → `TicketQueue.add()`로 요청 등록
+1. **Producer (User/Bot Thread)** → `TicketQueue.put()`로 요청 등록
 2. **Consumer (ServerThread)** → `TicketQueue.take()`로 요청 처리
 3. **좌석 예약** → `SeatManager.bookSeat(row, col)` 호출
-
    * 내부적으로 `Seat.book()` 호출 → 단일 스레드만 예약 성공
-   * 성공 시 `remainingSeats.decrementAndGet()` → AtomicInteger로 안전하게 남은 좌석 감소
-4. **UI 업데이트** → `SwingUtilities.invokeLater()` 사용하여 **EDT(Event Dispatch Thread)**에서 안전하게 처리
+   * 성공 시 `remainingSeats.decrementAndGet()` → `AtomicInteger`로 안전하게 남은 좌석 감소
+4. **UI 업데이트**
 
-> 참고: Swing은 스레드 안전하지 않으므로, 백그라운드 스레드에서 GUI를 직접 변경하면 안 됨.
 
 ---
 
@@ -50,7 +51,7 @@
 
 ### 4-1. Swing UI
 
-* **StartPanel** : 게임 시작 버튼
+* **StartPanel** : 게임 시작 화면
 * **QueuePanel** : 대기열 상태, 남은 대기열 수 표시
 * **SeatPanel** : 좌석 그리드, 예약 가능(보라) / 예약됨(회색) 색상 표시
 * **StatusPanel** : 총 좌석 수, 남은 좌석 수, 예약된 좌석 수 표시
@@ -97,4 +98,7 @@ Runnable bookTask = () -> {
 2. Bot과 사용자가 대기열에 들어감
 3. 서버 스레드가 요청 처리 → 사용자 차례 시 SeatPanel에서 좌석 선택 가능
 4. 좌석 예약 시 StatusPanel에서 남은 좌석 수 및 예약된 좌석 수 자동 갱신
+
+<img width="533" height="532" alt="image" src="https://github.com/user-attachments/assets/50cb5ac1-cc91-4b8f-948b-37c065aef331" />
+
 

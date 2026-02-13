@@ -1,6 +1,8 @@
 # 🎮 Concurrent Ticketing Simulator
 
 ## 1. 프로젝트 개요
+<img src="https://github.com/user-attachments/assets/295aa0bd-8f32-407b-9781-8e61e06eaa39" width="400">
+
 
 멀티스레드 환경에서 동시성 문제와 **thread-safe 설계**의 중요성을 시각적으로 보여주는 티켓팅 시뮬레이션 프로그램입니다.
 

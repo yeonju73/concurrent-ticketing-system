@@ -1,4 +1,4 @@
-package dev;
+package dev.domain;
 
 public class Seat {
 	private final String id;

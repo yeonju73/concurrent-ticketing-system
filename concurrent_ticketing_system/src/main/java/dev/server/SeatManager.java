@@ -1,6 +1,8 @@
-package dev;
+package dev.server;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import dev.domain.Seat;
 
 public class SeatManager {
 	private final Seat[][] seats;

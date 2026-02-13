@@ -1,8 +1,10 @@
-package dev;
+package dev.queue;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
+
+import dev.domain.TicketRequest;
 
 public class TicketQueue {
 	private final int MAX_SIZE = 5000; // 대기열 최대 인원
@@ -12,7 +14,7 @@ public class TicketQueue {
 	private AtomicLong serving = new AtomicLong(0); // 현재 처리 중 번호
 
 	/**
-	 * 프로듀서가 큐에 메시지를 적재, TicketQueue는 컨슈머에게 메시지가 큐에 적재되었음을 알림
+	 * 대기열 입장
 	 */
 	public void enterQueue(TicketRequest user) {
 		try {
@@ -30,7 +32,7 @@ public class TicketQueue {
 	}
 
 	/**
-	 * 컨슈머가 큐에서 메시지를 꺼내 소비, TicketQueue는 프로듀서에게 큐에 공간이 생겼음을 알림
+	 * 대기열 처리(소비)
 	 */
 	public TicketRequest processTicket() {
 		try {

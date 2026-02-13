@@ -1,5 +1,7 @@
 package dev;
 
+import dev.domain.Seat;
+
 public class SeatTest {
     public static void main(String[] args) throws InterruptedException {
         Seat seat = new Seat("A-1");

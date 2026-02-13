@@ -1,7 +1,9 @@
-package dev;
+package dev.server;
 
-import dev.listener.SeatBookedListener;
-import dev.listener.TicketEventListener;
+import dev.domain.TicketRequest;
+import dev.event.SeatBookedListener;
+import dev.event.TicketEventListener;
+import dev.queue.TicketQueue;
 
 // Consumer
 public class ServerThread implements Runnable {
@@ -24,16 +26,12 @@ public class ServerThread implements Runnable {
 				// 한 명 소비
 				TicketRequest request = queue.processTicket();
 
-				if (request == null) {
-					System.out.println(String.format("  [%s] 큐가 비어있음 %n", 
-							Thread.currentThread().getName()));
+				if (request.isBot()) {
+					consumeBot(request);
 				} else {
-					if (request.isBot()) {
-						consumeBot(request);
-					} else {
-						consumeUser(request);
-					}
+					consumeUser(request);
 				}
+				
 				// 0.5초마다 한 명씩 처리
 				Thread.sleep(500);
 
@@ -58,7 +56,7 @@ public class ServerThread implements Runnable {
 		try {
 			System.out.println("🤖 " + request.getName() + " 입장");
 
-			Thread.sleep(500);
+			Thread.sleep(100);
 
 			while (!seatManager.isSoldOut()) {
 

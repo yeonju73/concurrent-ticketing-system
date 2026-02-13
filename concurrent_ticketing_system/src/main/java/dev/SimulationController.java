@@ -1,6 +1,8 @@
 package dev;
 
-import swing.MainFrame;
+import dev.domain.TicketRequest;
+import dev.queue.TicketQueue;
+import dev.swing.MainFrame;
 
 public class SimulationController {
 
@@ -12,15 +14,19 @@ public class SimulationController {
 
 	public void startScenario(MainFrame frame) {
 
-		startBots(1, 10);
+		startBots(1, 130);	// user 앞에 130명
 
+		startUser(frame);	
+
+		startBots(131, 300);	//  user 뒤에 300명
+	}
+
+	private void startUser(MainFrame frame) {
 		TicketRequest userReq = new TicketRequest("USER", false);
 
 		frame.setCurrentUser(userReq);
 
 		new Thread(new UserThread(queue, userReq), "USER").start();
-
-		startBots(26, 1000);
 	}
 
 	// 봇 생성

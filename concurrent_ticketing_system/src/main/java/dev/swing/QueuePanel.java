@@ -1,11 +1,13 @@
-package swing;
+package dev.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import dev.TicketRequest;
+import dev.domain.TicketRequest;
 
 public class QueuePanel extends JPanel {
 
@@ -19,6 +21,7 @@ public class QueuePanel extends JPanel {
 		setLayout(new BorderLayout());
 
 		label = new JLabel("대기열 대기 중", JLabel.CENTER);
+		label.setFont(new Font("맑은 고딕", Font.PLAIN, 36));
 
 		// 주기적 상태 갱신
 		Timer timer = new Timer(500, e -> pollQueueState());

@@ -1,5 +1,8 @@
 package dev;
 
+import dev.domain.TicketRequest;
+import dev.queue.TicketQueue;
+
 // Producer
 public class UserThread implements Runnable {
 	private final TicketQueue queue;

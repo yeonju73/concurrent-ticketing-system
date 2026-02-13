@@ -1,4 +1,4 @@
-package swing;
+package dev.swing;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import dev.SeatManager;
+import dev.server.SeatManager;
 
 class SeatPanel extends JPanel  {
 

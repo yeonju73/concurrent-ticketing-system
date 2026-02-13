@@ -1,4 +1,4 @@
-package dev;
+package dev.domain;
 
 public class TicketRequest {
 	private long ticketNo;

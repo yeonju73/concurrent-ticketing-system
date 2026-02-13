@@ -1,4 +1,4 @@
-package swing;
+package dev.swing;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -7,13 +7,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import dev.SeatManager;
-import dev.ServerThread;
 import dev.SimulationController;
-import dev.TicketQueue;
-import dev.TicketRequest;
-import dev.listener.SeatBookedListener;
-import dev.listener.TicketEventListener;
+import dev.domain.TicketRequest;
+import dev.event.SeatBookedListener;
+import dev.event.TicketEventListener;
+import dev.queue.TicketQueue;
+import dev.server.SeatManager;
+import dev.server.ServerThread;
 
 public class MainFrame extends JFrame implements TicketEventListener, SeatBookedListener {
 
@@ -58,7 +58,7 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 		setVisible(true);
 
 		// 서버 스레드 시작
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 16; i++) {
 			ServerThread server = new ServerThread(queue, seatManager, this, this);
 			new Thread(server).start();
 		}

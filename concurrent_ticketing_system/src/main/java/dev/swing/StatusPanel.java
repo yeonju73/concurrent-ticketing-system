@@ -1,10 +1,10 @@
-package swing;
+package dev.swing;
 
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import dev.SeatManager;
+import dev.server.SeatManager;
 
 public class StatusPanel extends JPanel {
 

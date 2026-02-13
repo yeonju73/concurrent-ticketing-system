@@ -3,7 +3,7 @@
 ## 1. 프로젝트 개요
 멀티스레드 환경에서 동시성 문제와 **thread-safe 설계**의 중요성을 시각적으로 보여주는 티켓팅 시뮬레이션 프로그램입니다.
 
-<img src="https://github.com/user-attachments/assets/295aa0bd-8f32-407b-9781-8e61e06eaa39" width="400">
+<img src="https://github.com/user-attachments/assets/7e17f400-9139-4d64-a998-46aab51a9eeb" width="400">
 
 * 다수의 Bot Thread와 사용자 Thread가 동시에 대기열(Queue)에 진입
 * 대기열을 통과한 Thread들이 동시에 동일한 좌석에 접근하여 예약 경쟁

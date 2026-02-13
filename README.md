@@ -30,9 +30,11 @@
 
 | 공유 자원                      | 설명                | thread-safe 처리 방식                                          |
 | -------------------------- | ----------------- | ---------------------------------------------------------- |
-| TicketQueue                | 대기열에 들어온 사용자/봇 요청 | `BlockingQueue` 사용 → put()/take()로 producer-consumer 패턴 구현 |
-| SeatManager.remainingSeats | 남은 좌석 수           | `AtomicInteger` 사용 → `decrementAndGet()`로 원자적 감소           |
-| Seat (개별 좌석)               | 실제 좌석 하나          | `book()` 메소드로 임계 영역 보호 → 단일 스레드만 예약 가능                     |
+| TicketQueue                | 대기열에 들어온 사용자/봇 요청 | `BlockingQueue` 사용<br>put()/take()로 producer-consumer 패턴 구현 |
+| TicketQueue.sequence       | 티켓 번호 발급 카운터      | `AtomicLong` 사용<br>`incrementAndGet()`으로 중복 없는 번호 발급        |
+| TicketQueue.serving        | 현재 처리 중인 번호 추적    | `AtomicLong` 사용<br>`set()`으로 원자적 갱신                         |
+| SeatManager.remainingSeats | 남은 좌석 수           | `AtomicInteger` 사용<br>`decrementAndGet()`으로 원자적 감소           |
+| Seat (개별 좌석)               | 실제 좌석 하나          | `synchronized book()` 메소드 사용<br>임계 영역 보호 -> 단일 스레드만 예약 가능       |
 
 ### 3-2. 처리 순서
 <img width="700" height="233" alt="producer-consumer-1" src="https://github.com/user-attachments/assets/690a19de-4806-4723-a55a-0b37be84b965" />

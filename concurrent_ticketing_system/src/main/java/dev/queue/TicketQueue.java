@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import dev.domain.TicketRequest;
 
 public class TicketQueue {
+	
 	private final int MAX_SIZE = 5000; // 대기열 최대 인원
 	BlockingQueue<TicketRequest> queue = new ArrayBlockingQueue<>(MAX_SIZE);
 
@@ -24,7 +25,7 @@ public class TicketQueue {
 			// 큐에 삽입
 			queue.put(user);
 			
-			System.out.println(user.getName() + " 대기열 입장 : " + user.getTicketNo());
+			System.out.println(user.getName() + " 대기열 입장, 대기열 번호 : " + user.getTicketNo());
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -39,8 +40,6 @@ public class TicketQueue {
 			TicketRequest request = queue.take();
 
 			serving.set(request.getTicketNo());
-
-			System.out.println(request.getName() + " 소비");
 
 			return request;
 

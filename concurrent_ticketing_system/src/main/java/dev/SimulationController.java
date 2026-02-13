@@ -13,12 +13,13 @@ public class SimulationController {
 	}
 
 	public void startScenario(MainFrame frame) {
-
+	
 		startBots(1, 130);	// user 앞에 130명
 
 		startUser(frame);	
 
-		startBots(131, 300);	//  user 뒤에 300명
+		startBots(131, 300);	//  user 뒤에 300명	
+		
 	}
 
 	private void startUser(MainFrame frame) {

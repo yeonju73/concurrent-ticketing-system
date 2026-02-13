@@ -22,7 +22,7 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 	private final CardLayout cardLayout = new CardLayout();
 	private final JPanel container = new JPanel(cardLayout);
 
-	private final TicketQueue queue = new TicketQueue();
+	private final TicketQueue queue;
 
 	private final SeatManager seatManager;
 	private final SeatPanel seatPanel;
@@ -33,11 +33,12 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 	// 현재 유저 정보
 	private TicketRequest currentUser;
 
-	public MainFrame(int rows, int cols) {
+	public MainFrame(int rows, int cols, TicketQueue queue, SeatManager seatManager) {
+		this.queue = queue;
+		this.seatManager = seatManager;
 
 		setTitle("티켓팅 시뮬레이션");
 
-		seatManager = new SeatManager(rows, cols);
 		statusPanel = new StatusPanel(seatManager);
 		
 		simulationController = new SimulationController(queue);
@@ -56,12 +57,7 @@ public class MainFrame extends JFrame implements TicketEventListener, SeatBooked
 		setSize(600, 600);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
-
-		// 서버 스레드 시작
-		for (int i = 0; i < 16; i++) {
-			ServerThread server = new ServerThread(queue, seatManager, this, this);
-			new Thread(server).start();
-		}
+		
 		showStart();
 	}
 
